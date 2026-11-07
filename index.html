@@ -204,6 +204,7 @@ tailwind.config = { theme: { extend: {
   <div id="filters" class="reveal flex flex-wrap gap-2.5 mb-4"></div>
   <p id="resultCount" class="text-[.72rem] tracking-[.2em] text-white/40 mb-8"></p>
   <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+  <div id="sections" class="hidden"></div>
   <div id="emptyState" class="hidden text-center py-24">
     <p class="font-display text-2xl text-white/70 mb-3">Nothing matches that search</p>
     <p class="text-white/45 text-sm font-light">Try a different strain, brand or flavor — or ask Sage, our budtender, in the corner.</p>
@@ -568,7 +569,7 @@ const isGen = p => !!p.i && !p.i.startsWith("http");
 const leafSVG = '<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,106,.55)" stroke-width="1"><path d="M12 22c5-3.2 8-7.6 8-13V4.5C15.5 4.8 12 3 12 3S8.5 4.8 4 4.5V9c0 5.4 3 9.8 8 13Z"/><path d="M12 19V8M12 12c-1.8-.2-3-1.2-3.4-3 1.8.2 3 1.2 3.4 3Zm0 3.4c1.8-.2 3-1.2 3.4-3-1.8.2-3 1.2-3.4 3Z" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 let activeCat = "all", query = "";
-const grid = document.getElementById("grid"), filtersEl = document.getElementById("filters"),
+const grid = document.getElementById("grid"), sectionsEl = document.getElementById("sections"), filtersEl = document.getElementById("filters"),
       countEl = document.getElementById("resultCount"), emptyEl = document.getElementById("emptyState");
 
 function imgBlock(p, h){
@@ -599,19 +600,47 @@ function cardHTML(p, idx){
   </article>`;
 }
 
-function render(){
-  const q = query.trim().toLowerCase();
-  const list = PRODUCTS.map((p,i)=>({...p,_i:i})).filter(p =>
-    (activeCat==="all" || p.c===activeCat) &&
-    (!q || (p.n+" "+p.b+" "+CATLABEL[p.c]).toLowerCase().includes(q))
-  );
-  grid.innerHTML = list.map(p => cardHTML(p, p._i)).join("");
-  countEl.textContent = "SHOWING " + list.length + " OF " + PRODUCTS.length + " PRODUCTS · TAX INCLUDED";
-  emptyEl.classList.toggle("hidden", list.length>0);
-  grid.querySelectorAll(".card").forEach(el => {
+const PER_SHELF = 8;
+function wireCards(scope){
+  scope.querySelectorAll(".card").forEach(el => {
     el.addEventListener("click", () => openModal(+el.dataset.idx));
     el.addEventListener("keydown", e => { if(e.key==="Enter") openModal(+el.dataset.idx); });
   });
+}
+function render(){
+  const q = query.trim().toLowerCase();
+  const all = PRODUCTS.map((p,i)=>({...p,_i:i}));
+  const matches = p => !q || (p.n+" "+p.b+" "+CATLABEL[p.c]).toLowerCase().includes(q);
+  if(activeCat==="all" && !q){
+    grid.classList.add("hidden"); sectionsEl.classList.remove("hidden");
+    sectionsEl.innerHTML = CATS.slice(1).map(c => {
+      const items = all.filter(p => p.c===c.id);
+      if(!items.length) return "";
+      const cards = items.map((p,j) => {
+        const h = cardHTML(p, p._i);
+        return j >= PER_SHELF ? h.replace('class="card ', 'class="card morec hidden ') : h;
+      }).join("");
+      const btn = items.length > PER_SHELF ? `<div class="text-center mt-7"><button class="seemore pill rounded-full px-7 py-3 text-[.8rem] tracking-wide" data-seemore="${c.id}" data-n="${items.length}" data-label="${c.label}">See all ${items.length} ${c.label} ↓</button></div>` : "";
+      return `<div class="shelf mb-14"><div class="flex items-end justify-between gap-4 mb-5"><h3 class="font-display text-2xl md:text-3xl font-semibold">${c.label}</h3><span class="text-[.68rem] tracking-[.22em] text-gold/90">${items.length} PRODUCTS</span></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">${cards}</div>${btn}</div>`;
+    }).join("");
+    countEl.textContent = PRODUCTS.length + " PRODUCTS · " + PER_SHELF + " PER SHELF UP FRONT · TAX INCLUDED";
+    emptyEl.classList.add("hidden");
+    wireCards(sectionsEl);
+    sectionsEl.querySelectorAll("[data-seemore]").forEach(b => b.addEventListener("click", () => {
+      const extras = b.closest(".shelf").querySelectorAll(".morec");
+      const opening = extras.length && extras[0].classList.contains("hidden");
+      extras.forEach(x => x.classList.toggle("hidden", !opening));
+      b.textContent = opening ? "Show less ↑" : "See all " + b.dataset.n + " " + b.dataset.label + " ↓";
+    }));
+    return;
+  }
+  sectionsEl.classList.add("hidden"); sectionsEl.innerHTML = "";
+  grid.classList.remove("hidden");
+  const list = all.filter(p => (q || activeCat==="all" || p.c===activeCat) && matches(p));
+  grid.innerHTML = list.map(p => cardHTML(p, p._i)).join("");
+  countEl.textContent = "SHOWING " + list.length + " OF " + PRODUCTS.length + " PRODUCTS · TAX INCLUDED";
+  emptyEl.classList.toggle("hidden", list.length>0);
+  wireCards(grid);
 }
 function renderFilters(){
   filtersEl.innerHTML = CATS.map(c => {
@@ -866,6 +895,14 @@ renderFilters(); renderTiles(); render();
     <p id="installSteps" class="text-sm text-white/65 font-light mt-1.5 leading-relaxed"></p>
   </div>
 </div>
+<div id="installNudge" class="fixed left-3 bottom-[92px] z-[94] hidden" style="right:118px">
+  <div class="glass rounded-2xl flex items-center gap-3 px-3.5 py-3 shadow-2xl" style="background:rgba(14,20,14,.94);border:1px solid rgba(201,168,106,.35)">
+    <img src="icon-192.png" alt="" class="w-10 h-10 rounded-xl shrink-0"/>
+    <p class="text-[.82rem] leading-snug text-white/75 flex-1">Get the <b class="text-white">Cushman app</b> — the full menu on your home screen.</p>
+    <button id="nudgeInstall" class="shrink-0 rounded-full px-4 py-2 text-[.78rem] font-bold tracking-wide" style="background:#c9a86a;color:#141a12;border:none;cursor:pointer">INSTALL</button>
+    <button id="nudgeClose" aria-label="Dismiss" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,.55);font-size:1rem;line-height:1;padding:2px">✕</button>
+  </div>
+</div>
 <script>
 (function(){
   if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
@@ -873,16 +910,39 @@ renderFilters(); renderTiles(); render();
   const standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
   if (standalone && btn) btn.style.display = "none";
   let deferred = null;
-  addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; });
+  addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; setTimeout(() => considerNudge(0), 20000); });
+  const nudge = document.getElementById("installNudge");
+  let nudgeShown = false;
+  function nudgeSnoozed(){ try { return Date.now() - (+localStorage.getItem("cushNudge") || 0) < 14*24*3600*1000; } catch(e) { return false; } }
+  function snoozeNudge(){ try { localStorage.setItem("cushNudge", String(Date.now())); } catch(e) {} }
+  function hideNudge(){ if (nudge) nudge.classList.add("hidden"); }
+  function gateUp(){ const g = document.getElementById("ageGate"); return g && !g.classList.contains("hidden") && getComputedStyle(g).display !== "none"; }
+  function considerNudge(retries){
+    if (standalone || !deferred || nudgeShown || !nudge || nudgeSnoozed()) return;
+    if (gateUp()) { if ((retries || 0) < 5) setTimeout(() => considerNudge((retries || 0) + 1), 6000); return; }
+    nudgeShown = true; nudge.classList.remove("hidden");
+  }
+  async function runPrompt(){
+    if (!deferred) return false;
+    deferred.prompt();
+    try { await deferred.userChoice; } catch(e) {}
+    deferred = null; hideNudge(); snoozeNudge();
+    return true;
+  }
+  document.addEventListener("click", e => { if (e.target.closest && e.target.closest(".card,[data-seemore]")) setTimeout(() => considerNudge(0), 4000); });
+  addEventListener("appinstalled", () => { hideNudge(); if (btn) btn.style.display = "none"; });
   function showSteps(html){ steps.innerHTML = html; card.classList.remove("hidden"); }
   if (btn) btn.addEventListener("click", async () => {
-    if (deferred) { deferred.prompt(); try { await deferred.userChoice; } catch(e) {} deferred = null; return; }
+    if (await runPrompt()) return;
     const ua = navigator.userAgent || "";
     if (/iphone|ipad|ipod/i.test(ua)) showSteps("On iPhone: tap the <b>Share</b> button — the square with an arrow at the bottom of Safari — then choose <b>Add to Home Screen</b>. The Cushman icon lands on your home screen like any app.");
     else showSteps("Open your browser menu and choose <b>Add to Home screen</b> or <b>Install app</b>. The Cushman icon lands on your home screen like any app — no app store needed.");
   });
   const close = document.getElementById("installClose");
   if (close) close.addEventListener("click", () => card.classList.add("hidden"));
+  const nInstall = document.getElementById("nudgeInstall"), nClose = document.getElementById("nudgeClose");
+  if (nInstall) nInstall.addEventListener("click", runPrompt);
+  if (nClose) nClose.addEventListener("click", () => { hideNudge(); snoozeNudge(); });
 })();
 </script>
 </body>
