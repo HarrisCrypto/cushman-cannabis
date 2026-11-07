@@ -27,9 +27,20 @@ tailwind.config = { theme: { extend: {
   .btn-gold{background:linear-gradient(115deg,#dcbc7d,#c9a86a 55%,#a8894f);color:#141a10;font-weight:600;transition:.3s;box-shadow:0 8px 30px -8px rgba(201,168,106,.55)}
   .btn-gold:hover{transform:translateY(-2px);box-shadow:0 14px 38px -8px rgba(201,168,106,.65)}
   .btn-ghost{border:1px solid rgba(233,230,221,.28);transition:.3s}
+  .btn-solid-ghost{background:rgba(13,18,11,.68);border:1px solid rgba(232,207,154,.5);color:#f5f1e6;backdrop-filter:blur(8px);box-shadow:0 12px 32px -10px rgba(0,0,0,.65);transition:.3s}
+  .btn-solid-ghost:hover{background:rgba(13,18,11,.85);border-color:rgba(232,207,154,.85)}
+  .smoke-layer{position:absolute;border-radius:9999px;filter:blur(46px);background:radial-gradient(ellipse at center,rgba(214,232,218,.5),rgba(214,232,218,0) 65%);mix-blend-mode:screen;pointer-events:none}
+  .smoke-a{width:55vw;height:22vh;left:-8%;top:16%;opacity:.16;animation:smokeDrift 26s ease-in-out infinite alternate}
+  .smoke-b{width:44vw;height:18vh;right:-6%;top:52%;opacity:.12;animation:smokeDrift 34s ease-in-out infinite alternate-reverse}
+  @keyframes smokeDrift{from{transform:translateX(0) translateY(0) scale(1)}to{transform:translateX(9vw) translateY(-3vh) scale(1.18)}}
+  #actionBar{position:fixed;inset-inline:0;bottom:0;z-index:75;transform:translateY(110%);transition:transform .55s cubic-bezier(.22,1,.36,1)}
+  #actionBar.show{transform:none}
+  .bar-link{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px calc(10px + env(safe-area-inset-bottom));font-size:.64rem;letter-spacing:.16em;color:rgba(255,255,255,.75);transition:.25s}
+  .bar-link:hover{color:#e8cf9a}
+  .bar-link svg{color:#c9a86a}
   .btn-ghost:hover{border-color:#c9a86a;color:#e8cf9a}
   .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .hero-shade{background:linear-gradient(180deg,rgba(10,14,10,.62) 0%,rgba(10,14,10,.38) 40%,rgba(10,14,10,.88) 82%,#0a0e0a 100%),radial-gradient(ellipse at 30% 40%,rgba(76,175,125,.14),transparent 55%)}
+  .hero-shade{background:linear-gradient(180deg,rgba(10,14,10,.82) 0%,rgba(10,14,10,.5) 42%,rgba(10,14,10,.88) 82%,#0a0e0a 100%),radial-gradient(ellipse at 30% 40%,rgba(76,175,125,.14),transparent 55%)}
   .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
   .reveal.in{opacity:1;transform:none}
   .tile{transition:.45s cubic-bezier(.22,1,.36,1)}
@@ -53,7 +64,9 @@ tailwind.config = { theme: { extend: {
   details.faq[open ] .faq-plus{transform:rotate(45deg)}
   .faq-plus{transition:.3s}
   /* ——— Budtender Sage chat widget ——— */
-  #sageWrap{position:fixed;right:20px;bottom:20px;z-index:90;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+  #sageWrap{position:fixed;right:20px;bottom:20px;z-index:90;display:flex;flex-direction:column;align-items:flex-end;gap:10px;opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1),bottom .5s cubic-bezier(.22,1,.36,1)}
+  #sageWrap.on{opacity:1;transform:none;pointer-events:auto}
+  #sageWrap.bar-up{bottom:92px}
   #sageBubble{position:relative;background:linear-gradient(135deg,#2f9e54,#176f3a);color:#fff;font-weight:600;font-size:.93rem;padding:.7rem 1.4rem;border-radius:999px;cursor:pointer;box-shadow:0 12px 28px -8px rgba(0,0,0,.65);transition:transform .3s;text-align:center}
   #sageBubble::after{content:"";position:absolute;left:50%;bottom:-5px;width:12px;height:12px;background:#1e7f42;transform:translateX(-50%) rotate(45deg);border-radius:2px}
   #sageBubble:hover{transform:translateY(-2px)}
@@ -91,12 +104,12 @@ tailwind.config = { theme: { extend: {
 <!-- ══════════ NAV ══════════ -->
 <header class="fixed top-0 inset-x-0 z-[80]">
   <div class="glass-strong border-x-0 border-t-0">
-    <div class="max-w-7xl mx-auto px-5 md:px-8 h-[72px] flex items-center justify-between gap-4">
-      <a href="#top" class="flex items-center gap-3 shrink-0">
-        <img src="logo.png" alt="Cushman Cannabis and Co. logo" class="h-12 w-12 md:h-[52px] md:w-[52px] rounded-full shrink-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 h-[72px] flex items-center justify-between gap-3">
+      <a href="#top" class="flex items-center gap-3 shrink-0 min-w-0">
+        <img src="logo.png" alt="Cushman Cannabis and Co. logo" class="h-11 w-11 sm:h-12 sm:w-12 md:h-[52px] md:w-[52px] rounded-full shrink-0">
         <span class="leading-none">
-          <span class="font-display block text-lg md:text-[1.3rem] font-semibold tracking-wide">Cushman Cannabis</span>
-          <span class="block text-[.55rem] tracking-[.42em] text-gold mt-1.5">AND COMPANY · CUSHING, OK</span>
+          <span class="font-display block text-[1.02rem] min-[430px]:text-lg md:text-[1.3rem] font-semibold tracking-wide whitespace-nowrap">Cushman Cannabis</span>
+          <span class="hidden min-[430px]:block text-[.55rem] tracking-[.42em] text-gold mt-1.5">AND COMPANY · CUSHING, OK</span>
         </span>
       </a>
       <nav class="hidden md:flex items-center gap-9 text-[.8rem] tracking-[.14em] text-white/75">
@@ -107,7 +120,7 @@ tailwind.config = { theme: { extend: {
       </nav>
       <div class="flex items-center gap-3">
         <a href="https://weedmaps.com/dispensaries/cushman-cannabis-company" target="_blank" rel="noopener" class="hidden sm:inline-flex btn-ghost rounded-full px-5 py-2.5 text-[.8rem] tracking-wide">Order on Weedmaps</a>
-        <a href="tel:+19183060073" class="btn-gold rounded-full px-5 py-2.5 text-[.8rem] tracking-wide whitespace-nowrap">(918) 306-0073</a>
+        <a href="tel:+19183060073" class="btn-gold rounded-full px-3.5 py-2 text-[.74rem] sm:px-5 sm:py-2.5 sm:text-[.8rem] tracking-wide whitespace-nowrap shrink-0">(918) 306-0073</a>
       </div>
     </div>
   </div>
@@ -117,17 +130,19 @@ tailwind.config = { theme: { extend: {
 <section id="top" class="relative min-h-[100svh] flex items-end md:items-center overflow-hidden">
   <video class="hero-video" autoplay muted loop playsinline preload="auto" src="hero-calm-loop.mp4"></video>
   <div class="hero-shade absolute inset-0"></div>
+  <div class="smoke-layer smoke-a"></div>
+  <div class="smoke-layer smoke-b"></div>
   <div class="relative z-10 max-w-7xl mx-auto px-5 md:px-8 w-full pt-36 pb-48 md:py-40">
     <div class="max-w-3xl">
       <div class="flex items-center gap-3 mb-6">
         <span class="h-px w-12 bg-gold/70"></span>
-        <span class="text-[.68rem] md:text-xs tracking-[.4em] text-gold">CUSHING, OKLAHOMA · MEDICAL DISPENSARY</span>
+        <span class="text-[.68rem] md:text-xs tracking-[.4em] text-white font-medium" style="text-shadow:0 1px 14px rgba(0,0,0,.7)">CUSHING, OKLAHOMA · MEDICAL DISPENSARY</span>
       </div>
       <h1 class="font-display font-semibold leading-[1.02] text-[2.7rem] sm:text-6xl lg:text-7xl">Botanical Luxury,<br><span class="gold-text">Rooted in Cushing.</span></h1>
       <p class="mt-6 text-white/75 text-base md:text-lg leading-relaxed max-w-xl font-light">Premium flower, live-resin vapes, small-batch concentrates and chef-crafted edibles — hand-picked for Oklahoma patients, with honest prices and tax already included.</p>
       <div class="mt-9 flex flex-wrap gap-4">
         <a href="#menu" class="btn-gold rounded-full px-8 py-4 text-sm tracking-wide">Browse the Menu</a>
-        <a href="#visit" class="btn-ghost rounded-full px-8 py-4 text-sm tracking-wide text-white/90">Plan Your Visit</a>
+        <a href="#visit" class="btn-solid-ghost rounded-full px-8 py-4 text-sm tracking-wide">Plan Your Visit</a>
       </div>
       <div class="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-[.72rem] tracking-[.18em] text-white/60">
         <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-sage"></span>10% OFF YOUR FIRST ORDER</span>
@@ -328,7 +343,7 @@ tailwind.config = { theme: { extend: {
         </div>
       </div>
     </div>
-    <div class="border-t border-white/5 mt-12 pt-7 flex flex-col md:flex-row justify-between gap-3 text-[.7rem] text-white/35 font-light">
+    <div class="border-t border-white/5 mt-12 pt-7 pb-16 flex flex-col md:flex-row justify-between gap-3 text-[.7rem] text-white/35 font-light">
       <p>© 2026 Cushman Cannabis &amp; Company · License DAAA-NYVV-OUDB</p>
       <p>For use by licensed Oklahoma medical marijuana patients only. Keep out of reach of children.</p>
     </div>
@@ -344,7 +359,18 @@ tailwind.config = { theme: { extend: {
   </div>
 </div>
 
-<!-- ══════════ BUDTENDER SAGE — CHAT WIDGET (unchanged) ══════════ -->
+<!-- ══════════ BOTTOM ACTION BAR (appears on scroll) ══════════ -->
+<div id="actionBar">
+  <div class="glass-strong border-x-0 border-b-0">
+    <div class="max-w-3xl mx-auto grid grid-cols-3">
+      <a class="bar-link" href="tel:+19183060073"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7A2 2 0 0 1 22 16.9z"/></svg>CALL</a>
+      <a class="bar-link" href="https://www.google.com/maps/search/?api=1&query=Cushman+Cannabis+Company+217+West+Moses+Street+Cushing+OK+74023" target="_blank" rel="noopener"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>DIRECTIONS</a>
+      <a class="bar-link" href="https://weedmaps.com/dispensaries/cushman-cannabis-company" target="_blank" rel="noopener"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h15l-1.5 9h-12z"/><path d="M6 7 5 3H2"/><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/></svg>ORDER AHEAD</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ BUDTENDER SAGE — CHAT WIDGET ══════════ -->
 <div id="sageWrap">
   <div id="sageBubble" role="button" aria-label="Ask your budtender">Ask your budtender</div>
   <div id="sagePanel" class="glass-strong rounded-3xl overflow-hidden shadow-2xl">
@@ -362,6 +388,8 @@ tailwind.config = { theme: { extend: {
       <button class="sage-chip rounded-full px-3.5 py-1.5 text-xs" data-q="Where are you located?">Location</button>
       <button class="sage-chip rounded-full px-3.5 py-1.5 text-xs" data-q="Do you have a first-time discount?">First-time deal</button>
       <button class="sage-chip rounded-full px-3.5 py-1.5 text-xs" data-q="Show me the menu">Menu</button>
+      <button class="sage-chip rounded-full px-3.5 py-1.5 text-xs" data-q="What's on sale?">On sale</button>
+      <button class="sage-chip rounded-full px-3.5 py-1.5 text-xs" data-q="What helps with sleep?">Sleep</button>
     </div>
     <form id="sageForm" class="flex gap-2 p-3 border-t hairline">
       <input id="sageInput" type="text" placeholder="Ask Sage anything…" autocomplete="off" class="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2.5 text-sm placeholder:text-white/35 focus:outline-none focus:border-gold/60">
@@ -694,51 +722,117 @@ renderFilters(); renderTiles(); render();
   }
   function sageSay(text){ setTimeout(() => addMsg(text, "bot"), 350); }
 
+  /* ——— Sage's product brain: answers from the live catalog ——— */
+  const moneyS = n => "$" + n.toFixed(2);
+  const CATWORDS = {flower:["flower","bud","buds","strain","strains"],prerolls:["pre-roll","pre roll","preroll","prerolls","joint","joints"],infused:["infused"],vapes:["vape","vapes","cart","carts","cartridge","pod","pods","pen","pens","disposable"],concentrates:["concentrate","concentrates","dab","dabs","shatter","rosin","resin","diamond","diamonds","wax"],edibles:["edible","edibles","gummie","gummies","gummy","chocolate","lozenge","pouch","pouches"],wellness:["wellness","drink","drinks","tincture","beverage"]};
+  function catIntent(q){ for(const c in CATWORDS){ if(CATWORDS[c].some(w => q.includes(w))) return c; } return null; }
+  function thcOf(p){ const m = (p.t || "").match(/([\d.]+)\s*%/); return m ? parseFloat(m[1]) : 0; }
+  function prodRow(o){
+    return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:7px 10px"><span style="min-width:0"><span style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${o.p.n}</span><span style="color:rgba(255,255,255,.5);font-size:.72rem">${o.p.s ? o.p.s + " · " : ""}${moneyS(o.p.p)}${o.p.w ? ` <s style="color:rgba(255,255,255,.35)">${moneyS(o.p.w)}</s>` : ""}</span></span><button data-open="${o.i}" style="flex-shrink:0;color:#e8cf9a;font-size:.68rem;letter-spacing:.08em;border:1px solid rgba(201,168,106,.45);border-radius:999px;padding:5px 11px;background:transparent;cursor:pointer">VIEW</button></div>`;
+  }
+  function listAnswer(list, lead){
+    if(!list.length) return null;
+    let out = lead + list.slice(0,4).map(prodRow).join("");
+    if(list.length > 4) out += `<div style="color:rgba(255,255,255,.45);font-size:.72rem;margin-top:8px">…plus ${list.length - 4} more in the menu below — or ask me to narrow it down.</div>`;
+    return out;
+  }
+  function searchProducts(q){
+    const cat = catIntent(q);
+    const stop = ["what","do","you","have","show","the","for","and","with","any","get","has","are","there","your","that","this","me","my","is","it","in","on","of","a"];
+    const words = q.split(/[^a-z0-9%]+/).filter(w => w.length > 2 && !stop.includes(w));
+    let scored = PRODUCTS.map((p,i) => {
+      const name = p.n.toLowerCase(), brand = (p.b || "").toLowerCase(), desc = (p.d || "").toLowerCase(), label = CATLABEL[p.c].toLowerCase();
+      let s = 0;
+      words.forEach(w => { if(name.includes(w)) s += 3; if(brand.includes(w)) s += 2; if(label.includes(w)) s += 2; if(desc.includes(w)) s += 1; });
+      if(cat && p.c === cat) s += 2;
+      return {p, i, s};
+    }).filter(o => o.s > 0);
+    if(cat && !scored.length) scored = PRODUCTS.map((p,i) => ({p, i, s:1})).filter(o => o.p.c === cat);
+    scored.sort((a,b) => b.s - a.s || a.p.p - b.p.p);
+    return scored;
+  }
+
   function answer(qRaw){
-    const q = qRaw.toLowerCase();
+    const q = qRaw.toLowerCase().trim();
     if(/(hour|open|close|when)/.test(q))
       return "We're open <b>Mon 11 AM – 8 PM</b>, <b>Tue–Fri 10 AM – 8 PM</b>, <b>Sat 11 AM – 8 PM</b>, and closed Sundays. Come see us!";
     if(/(where|address|located|location|direction|find you|map)/.test(q))
       return "You'll find us at <b>217 West Moses Street, Cushing, OK 74023</b> — right here in town. Tap “Get Directions” in the Visit section and we'll guide you in.";
     if(/(phone|call|number|contact)/.test(q))
       return "Give us a ring at <b>(918) 306-0073</b> — or email cush@cushmanllc.com. We're happy to check stock or hold something for curbside pickup.";
-    if(/(discount|first|deal|offer|coupon|sale|10%)/.test(q))
+    if(/(first|10%|new patient|new here)/.test(q))
       return "New patients get <b>10% off their first order</b> — just mention it at checkout. And every price on our menu already has tax included, so there are no surprises.";
-    if(/(menu|order|buy|shop|weedmaps|pickup|curbside)/.test(q))
-      return "You can browse the full live menu right on this page — tap any product to see it on Weedmaps and order ahead. We offer <b>curbside pickup</b>: just call (918) 306-0073 when you arrive.";
+    if(/(on sale|sale|special|deal|discount|offer|coupon|promo)/.test(q)){
+      const sale = PRODUCTS.map((p,i) => ({p, i})).filter(o => o.p.w);
+      return listAnswer(sale, `Here's what's <b>on sale</b> right now — ${sale.length} items, tax included:`) || "Nothing's marked down at the moment — but new patients always get 10% off their first order.";
+    }
     if(/(card|medical|omma|license|id)/.test(q))
       return "We're a medical dispensary, so you'll need a valid <b>OMMA patient license</b> and photo ID. Don't have a card yet? omma.ok.gov can walk you through applying.";
-    if(/(pay|cash|card|atm|credit|debit)/.test(q))
+    if(/(pay|cash|atm|credit|debit)/.test(q))
       return "We accept cash, and there's an <b>ATM right on-site</b>. Don't forget to join the loyalty program while you're in!";
-    if(/(sleep|insomnia|pain|anxiety|stress|relax)/.test(q))
-      return "For winding down, patients often reach for an indica — our <b>Jealousy</b> or <b>Sundown Sherbert</b> flower, or the <b>Goodnight Grape</b> CBN gummies. Everyone's different though, so start low and go slow.";
-    if(/(energy|focus|daytime|uplift|creative)/.test(q))
-      return "For an uplifting daytime lift, look at <b>Mandarin Cookies</b> flower, the <b>Uplifting Pineapple Habanero</b> Camino gummies, or a <b>Super Lemon Haze</b> cartridge. Bright and citrusy is the theme.";
-    if(/(vape|cart|disposable|pod)/.test(q))
-      return "Our vape wall is stacked — <b>ROVE melted-diamond pods</b>, <b>JEFE live resin disposables</b> up to 5 grams, Loud Panda and Oil Traderz. Check the Vape Pens section of the menu for the full lineup.";
-    if(/(edible|gumm|eat)/.test(q))
-      return "Edibles start at just $12 — Wana and Camino gummies are patient favorites. New to edibles? Start with a low dose (5–10mg) and give it a full two hours before taking more.";
-    if(/(price|cost|much|cheap)/.test(q))
-      return "Prices on the menu range from a $4 pre-roll to premium live rosin — and every single one includes tax. The $10 Oil Traderz cartridges and $8 infused minis are great value picks.";
-    if(/(hi|hello|hey|yo)\b/.test(q))
-      return "Hey there! I'm Sage, your budtender. Ask me about hours, deals, or tell me the vibe you're after and I'll point you to the right shelf.";
-    if(/(thank|thanks)/.test(q))
+    const cat = catIntent(q);
+    const under = q.match(/under \$?(\d+)|less than \$?(\d+)|below \$?(\d+)/);
+    if(under || /(cheap|budget|affordable)/.test(q)){
+      const cap = under ? parseInt(under[1] || under[2] || under[3]) : 15;
+      const list = PRODUCTS.map((p,i) => ({p, i})).filter(o => o.p.p <= cap && (!cat || o.p.c === cat)).sort((a,b) => a.p.p - b.p.p);
+      return listAnswer(list, `Best options <b>at $${cap} or under</b>${cat ? " in " + CATLABEL[cat] : ""}, tax included:`) || `Nothing lands at $${cap} or under right now — call us at (918) 306-0073 and we'll find the closest pick.`;
+    }
+    if(/(strongest|highest thc|most potent)/.test(q)){
+      const list = PRODUCTS.map((p,i) => ({p, i})).filter(o => thcOf(o.p) > 0 && (!cat || o.p.c === cat)).sort((a,b) => thcOf(b.p) - thcOf(a.p));
+      return listAnswer(list, `By listed THC, the strongest${cat ? " in " + CATLABEL[cat] : ""} on the shelf:`) || "THC numbers aren't listed for those — ask me about a category and I'll pull the details.";
+    }
+    if(/(cheapest|lowest price)/.test(q) && cat){
+      const list = PRODUCTS.map((p,i) => ({p, i})).filter(o => o.p.c === cat).sort((a,b) => a.p.p - b.p.p);
+      return listAnswer(list, `Cheapest in <b>${CATLABEL[cat]}</b>:`);
+    }
+    if(/(sleep|insomnia|night|relax|pain|anxiety|stress)/.test(q)){
+      let list = searchProducts(q + " cbn").filter(o => /cbn|sleep|night|indica/i.test(o.p.n + " " + (o.p.d || "")));
+      if(!list.length) list = searchProducts("goodnight grape");
+      const a = listAnswer(list, "For winding down, patients usually start with these:");
+      if(a) return a + `<div style="margin-top:8px;color:rgba(255,255,255,.55);font-size:.78rem">Everyone's different — start low and go slow.</div>`;
+    }
+    if(/(energy|focus|daytime|uplift|creative|awake)/.test(q)){
+      const list = searchProducts(q + " sativa").filter(o => /sativa|uplift/i.test(o.p.n + " " + (o.p.d || "")));
+      const a = listAnswer(list, "For a brighter, daytime lift, look at these:");
+      if(a) return a;
+    }
+    if(/(menu|order|buy|shop|weedmaps|pickup|curbside)/.test(q))
+      return "You can browse the full live menu right on this page — tap any product to see it on Weedmaps and order ahead. We offer <b>curbside pickup</b>: just call (918) 306-0073 when you arrive.";
+    if(/(thank|thanks|bye)/.test(q))
       return "Anytime! That's what I'm here for. Hope to see you at the shop — 217 West Moses, Cushing.";
+    const found = searchProducts(q);
+    if(found.length) return listAnswer(found, `Here's what I found for “${qRaw.trim()}”:`);
     return "Good question — I want to make sure you get the exact right answer. You can call the shop at <b>(918) 306-0073</b>, or ask me about hours, our location, the first-time discount, or what's on the menu.";
   }
-
   function openPanel(){
-    panel.classList.add("open"); wrap.classList.add("chat-open");
+    panel.classList.add("open"); wrap.classList.add("chat-open"); wrap.classList.add("on");
+    document.getElementById("actionBar").classList.remove("show"); wrap.classList.remove("bar-up");
     if(!greeted){
       greeted = true;
       sageSay("Hey, I'm <b>Sage</b>, your budtender here at Cushman. Looking for something to relax, something uplifting, or just the hours? Ask away.");
     }
     setTimeout(() => input.focus(), 80);
   }
-  function closePanel(){ panel.classList.remove("open"); wrap.classList.remove("chat-open"); }
+  function closePanel(){ panel.classList.remove("open"); wrap.classList.remove("chat-open"); onScroll(); }
   btn.addEventListener("click", () => panel.classList.contains("open") ? closePanel() : openPanel());
   bubble.addEventListener("click", openPanel);
   document.getElementById("sageClose").addEventListener("click", closePanel);
+
+  /* Launcher + bottom action bar are scroll-driven: hidden at the top of the page */
+  function onScroll(){
+    const y = window.scrollY || 0, open = panel.classList.contains("open");
+    wrap.classList.toggle("on", open || y > 250);
+    document.getElementById("actionBar").classList.toggle("show", y > 420 && !open);
+    wrap.classList.toggle("bar-up", y > 420 && !open);
+  }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  onScroll();
+
+  /* Tap a product Sage mentions -> open its detail card */
+  msgs.addEventListener("click", e => {
+    const b = e.target.closest("[data-open]");
+    if(b){ closePanel(); setTimeout(() => openModal(+b.dataset.open), 60); }
+  });
   document.querySelectorAll("#sageChips .sage-chip").forEach(ch => ch.addEventListener("click", () => {
     addMsg(ch.dataset.q, "user"); sageSay(answer(ch.dataset.q));
   }));
