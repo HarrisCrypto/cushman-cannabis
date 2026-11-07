@@ -607,6 +607,7 @@ function cardHTML(p, idx){
 }
 
 const PER_SHELF = 8;
+const expandedShelves = new Set();
 function wireCards(scope){
   scope.querySelectorAll(".card").forEach(el => {
     el.addEventListener("click", () => openModal(+el.dataset.idx));
@@ -624,9 +625,9 @@ function render(){
       if(!items.length) return "";
       const cards = items.map((p,j) => {
         const h = cardHTML(p, p._i);
-        return j >= PER_SHELF ? h.replace('class="card ', 'class="card morec hidden ') : h;
+        return (j >= PER_SHELF && !expandedShelves.has(c.id)) ? h.replace('class="card ', 'class="card morec hidden ') : h;
       }).join("");
-      const btn = items.length > PER_SHELF ? `<div class="text-center mt-7"><button class="seemore pill rounded-full px-7 py-3 text-[.8rem] tracking-wide" data-seemore="${c.id}" data-n="${items.length}" data-label="${c.label}">See all ${items.length} ${c.label} ↓</button></div>` : "";
+      const btn = items.length > PER_SHELF ? `<div class="text-center mt-7"><button class="seemore pill rounded-full px-7 py-3 text-[.8rem] tracking-wide" data-seemore="${c.id}" data-n="${items.length}" data-label="${c.label}">${expandedShelves.has(c.id) ? "Show less ↑" : "See all " + items.length + " " + c.label + " ↓"}</button></div>` : "";
       return `<div class="shelf mb-14"><div class="flex items-end justify-between gap-4 mb-5"><h3 class="font-display text-2xl md:text-3xl font-semibold">${c.label}</h3><span class="text-[.68rem] tracking-[.22em] text-gold/90">${items.length} PRODUCTS</span></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">${cards}</div>${btn}</div>`;
     }).join("");
     countEl.textContent = PRODUCTS.length + " PRODUCTS · " + PER_SHELF + " PER SHELF UP FRONT · TAX INCLUDED";
@@ -635,6 +636,7 @@ function render(){
     sectionsEl.querySelectorAll("[data-seemore]").forEach(b => b.addEventListener("click", () => {
       const extras = b.closest(".shelf").querySelectorAll(".morec");
       const opening = extras.length && extras[0].classList.contains("hidden");
+      if(opening) expandedShelves.add(b.dataset.seemore); else expandedShelves.delete(b.dataset.seemore);
       extras.forEach(x => x.classList.toggle("hidden", !opening));
       b.textContent = opening ? "Show less ↑" : "See all " + b.dataset.n + " " + b.dataset.label + " ↓";
     }));
@@ -657,7 +659,7 @@ function renderFilters(){
 }
 function renderTiles(){
   const descs = {flower:"Oklahoma-grown, hand-trimmed buds",prerolls:"Singles & the famous ounce bag",infused:"Diamond & hash-oil infused heat",vapes:"Live resin, rosin & diamond pods",concentrates:"Diamonds, shatter & cured resin",edibles:"Gummies, lozenges & nano pouches",wellness:"Fast-acting drinkable relief"};
-  const imgs = {flower:"cat-flower.jpg",prerolls:"img-preroll-1g.jpg",infused:"img-infused-co2-2g.jpg",vapes:"cat-vapes.jpg",concentrates:"cat-concentrates.jpg",edibles:"https://weedmaps.com/images/products/000/596/864/avatar/1714682324-wana-universal_hero-rec-watermelon_hybrid.png?auto=format&w=900",wellness:"cat-wellness.jpg"};
+  const imgs = {flower:"https://weedmaps.com/images/pictures/users/006/655/925/439424804_Tig_Ol_Bitties.JPG?auto=format&w=900",prerolls:"img-preroll-ounce-bag.jpg",infused:"https://weedmaps.com/images/pictures/users/006/655/925/443495020_CHERRY_POPPER_2PK.JPG?auto=format&w=900",vapes:"https://weedmaps.com/images/products/000/634/677/avatar/1757100723-5gjefesativa.jpg?auto=format&w=900",concentrates:"https://weedmaps.com/images/pictures/users/006/655/925/442676297_2g_cured_resin.JPG?auto=format&w=900",edibles:"https://weedmaps.com/images/products/000/596/864/avatar/1714682324-wana-universal_hero-rec-watermelon_hybrid.png?auto=format&w=900",wellness:"https://weedmaps.com/images/products/000/927/465/avatar/1760057680-nectar_watermelon_1000mg_country_cannabis.png?auto=format&w=900"};
   document.getElementById("tiles").innerHTML = CATS.slice(1).map(c => {
     const n = PRODUCTS.filter(p=>p.c===c.id).length;
     return `<button class="tile group relative overflow-hidden rounded-3xl border border-white/10 text-left h-48 md:h-56 w-full" data-cat="${c.id}">
