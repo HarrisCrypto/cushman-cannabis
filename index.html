@@ -54,11 +54,13 @@ tailwind.config = { theme: { extend: {
   .faq-plus{transition:.3s}
   /* ——— Budtender Sage chat widget ——— */
   #sageWrap{position:fixed;right:20px;bottom:20px;z-index:90;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
-  #sageBubble{opacity:0;transform:translateY(8px) scale(.96);pointer-events:none;transition:.45s cubic-bezier(.22,1,.36,1)}
-  #sageBubble.show{opacity:1;transform:none;pointer-events:auto}
-  #sageBtn{width:64px;height:64px;border-radius:999px;overflow:hidden;border:2px solid rgba(201,168,106,.65);box-shadow:0 14px 34px -8px rgba(0,0,0,.7);transition:.3s;background:#131a12}
-  #sageBtn:hover{transform:scale(1.06)}
-  #sageBtn img{width:100%;height:100%;object-fit:cover}
+  #sageBubble{position:relative;background:linear-gradient(135deg,#2f9e54,#176f3a);color:#fff;font-weight:600;font-size:.93rem;padding:.7rem 1.4rem;border-radius:999px;cursor:pointer;box-shadow:0 12px 28px -8px rgba(0,0,0,.65);transition:transform .3s;text-align:center}
+  #sageBubble::after{content:"";position:absolute;left:50%;bottom:-5px;width:12px;height:12px;background:#1e7f42;transform:translateX(-50%) rotate(45deg);border-radius:2px}
+  #sageBubble:hover{transform:translateY(-2px)}
+  #sageBtn{width:96px;height:96px;border-radius:22px;overflow:hidden;border:none;box-shadow:0 16px 36px -10px rgba(0,0,0,.75);background:#000;padding:0;cursor:pointer;animation:sageBob 3.4s ease-in-out infinite}
+  #sageBtn img{width:100%;height:100%;object-fit:cover;display:block}
+  #sageWrap.chat-open #sageBubble,#sageWrap.chat-open #sageBtn{display:none}
+  @keyframes sageBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
   #sagePanel{width:min(92vw,360px);max-height:min(70vh,560px);display:none;flex-direction:column}
   #sagePanel.open{display:flex}
   #sageMsgs{overflow-y:auto;scrollbar-width:thin}
@@ -74,6 +76,7 @@ tailwind.config = { theme: { extend: {
 <!-- ══════════ AGE GATE ══════════ -->
 <div id="ageGate" class="fixed inset-0 z-[120] flex items-center justify-center px-4" style="background:radial-gradient(ellipse at 50% 30%,rgba(76,175,125,.12),transparent 55%),rgba(6,9,6,.96)">
   <div class="glass-strong rounded-3xl max-w-md w-full p-8 md:p-10 text-center">
+    <img src="logo.png" alt="Cushman Cannabis and Co. logo" class="h-24 w-24 mx-auto mb-5">
     <div class="font-display text-3xl md:text-4xl font-700 tracking-wide">CUSHMAN</div>
     <div class="text-[.65rem] tracking-[.45em] text-gold mt-1 mb-6">CANNABIS &amp; COMPANY</div>
     <p class="text-sm text-white/70 leading-relaxed mb-2">This site features medical cannabis products.</p>
@@ -90,10 +93,10 @@ tailwind.config = { theme: { extend: {
   <div class="glass-strong border-x-0 border-t-0">
     <div class="max-w-7xl mx-auto px-5 md:px-8 h-[72px] flex items-center justify-between gap-4">
       <a href="#top" class="flex items-center gap-3 shrink-0">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" class="text-gold"><path d="M12 22c5-3.2 8-7.6 8-13V4.5C15.5 4.8 12 3 12 3S8.5 4.8 4 4.5V9c0 5.4 3 9.8 8 13Z" stroke="currentColor" stroke-width="1.1"/><path d="M12 19V8M12 12c-1.8-.2-3-1.2-3.4-3 1.8.2 3 1.2 3.4 3Zm0 3.4c1.8-.2 3-1.2 3.4-3-1.8.2-3 1.2-3.4 3Z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <img src="logo.png" alt="Cushman Cannabis and Co. logo" class="h-12 w-12 md:h-[52px] md:w-[52px] rounded-full shrink-0">
         <span class="leading-none">
-          <span class="font-display block text-lg md:text-xl font-semibold tracking-[.18em]">CUSHMAN</span>
-          <span class="block text-[.55rem] tracking-[.42em] text-gold mt-1">CANNABIS &amp; COMPANY</span>
+          <span class="font-display block text-lg md:text-[1.3rem] font-semibold tracking-wide">Cushman Cannabis</span>
+          <span class="block text-[.55rem] tracking-[.42em] text-gold mt-1.5">AND COMPANY · CUSHING, OK</span>
         </span>
       </a>
       <nav class="hidden md:flex items-center gap-9 text-[.8rem] tracking-[.14em] text-white/75">
@@ -112,7 +115,7 @@ tailwind.config = { theme: { extend: {
 
 <!-- ══════════ HERO ══════════ -->
 <section id="top" class="relative min-h-[100svh] flex items-end md:items-center overflow-hidden">
-  <video class="hero-video" autoplay muted loop playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_3F11IYSs3dcKIkTHqcXS7DdP1hI/hf_20261106_212430_c678ee17-0f69-4d9e-8e85-849b74f99bf8.mp4?v=20261106212849"></video>
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" src="hero-loop.mp4"></video>
   <div class="hero-shade absolute inset-0"></div>
   <div class="relative z-10 max-w-7xl mx-auto px-5 md:px-8 w-full pt-36 pb-20 md:py-40">
     <div class="max-w-3xl">
@@ -285,8 +288,13 @@ tailwind.config = { theme: { extend: {
   <div class="max-w-7xl mx-auto px-5 md:px-8 py-14">
     <div class="flex flex-col md:flex-row justify-between gap-10">
       <div>
-        <div class="font-display text-2xl font-semibold tracking-[.18em]">CUSHMAN</div>
-        <div class="text-[.55rem] tracking-[.42em] text-gold mt-1 mb-5">CANNABIS &amp; COMPANY</div>
+        <div class="flex items-center gap-3.5 mb-5">
+          <img src="logo.png" alt="Cushman Cannabis and Co. logo" class="h-14 w-14 rounded-full shrink-0">
+          <div>
+            <div class="font-display text-[1.35rem] font-semibold tracking-wide leading-none">Cushman Cannabis</div>
+            <div class="text-[.55rem] tracking-[.42em] text-gold mt-1.5">AND COMPANY</div>
+          </div>
+        </div>
         <p class="text-white/50 text-sm font-light leading-relaxed max-w-xs">217 West Moses Street, Cushing, OK 74023<br>(918) 306-0073 · cush@cushmanllc.com</p>
       </div>
       <div class="flex gap-16 text-sm">
@@ -327,13 +335,10 @@ tailwind.config = { theme: { extend: {
 
 <!-- ══════════ BUDTENDER SAGE — CHAT WIDGET (unchanged) ══════════ -->
 <div id="sageWrap">
-  <div id="sageBubble" class="glass-strong rounded-2xl rounded-br-md px-4 py-3 text-sm shadow-2xl cursor-pointer max-w-[230px]">
-    <span class="font-medium text-gold">Ask your budtender</span>
-    <span class="block text-white/60 text-xs mt-0.5 font-light">Hours, deals, recommendations…</span>
-  </div>
+  <div id="sageBubble" role="button" aria-label="Ask your budtender">Ask your budtender</div>
   <div id="sagePanel" class="glass-strong rounded-3xl overflow-hidden shadow-2xl">
     <div class="flex items-center gap-3 px-5 py-4 border-b hairline">
-      <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3F11IYSs3dcKIkTHqcXS7DdP1hI/hf_20261106_215223_e1b51bb2-3895-4848-a6e2-d650d4da4a.png" alt="Sage the budtender" class="w-11 h-11 rounded-full object-cover border border-gold/50">
+      <img src="sage-leaf.jpg" alt="Sage the budtender" class="w-11 h-11 rounded-full object-cover border border-gold/50">
       <div class="flex-1">
         <p class="font-display tracking-wide">Budtender Sage</p>
         <p class="text-[.68rem] text-sage flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-sage"></span>Here to help you find your strain</p>
@@ -353,7 +358,7 @@ tailwind.config = { theme: { extend: {
     </form>
   </div>
   <button id="sageBtn" aria-label="Chat with Budtender Sage">
-    <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3F11IYSs3dcKIkTHqcXS7DdP1hI/hf_20261106_215223_e1b51bb2-3895-4848-a6e2-d650d4da4a.png" alt="Budtender Sage">
+    <img src="sage-leaf.jpg" alt="Budtender Sage">
   </button>
 </div>
 
@@ -386,19 +391,19 @@ const PRODUCTS = [
 {n:"Sundown Sherbert (I)",b:"F5 Farms",c:"flower",p:20,s:"3.5g",t:"",d:D_F5+" Genetics: Sunset Sherbert x Tropicanna Cookies F1",i:IMG+"products/001/015/970/avatar/1775760501-1774991871-1774556696-download.jpeg",u:"f5-farms-sundown-sherbert-i-big-buds-3-5g"},
 {n:"Pave - 3.5G",b:"",c:"flower",p:20,s:"3.5g",t:"",d:"",i:IMG+"pictures/users/006/655/925/441828631_pave.JPG",u:"pave-28g"},
 /* ——— PRE-ROLLS ——— */
-{n:"Pre-Roll Ounce Bag (28) 1g Pre-Rolls",b:"Cushman Cannabis and Company",c:"prerolls",p:30.80,w:35,s:"28 × 1g",t:"25% THC",d:"Over 50 Strains to choose from!",i:null,u:"28-1g-pre-rolls-all-one-strain"},
-{n:"1g Pre-Roll",b:"Cushman Cannabis and Company",c:"prerolls",p:4,w:5,s:"1g",t:"28% THC",d:"Over 50 Strains to choose from!",i:null,u:"1g-pre-roll"},
+{n:"Pre-Roll Ounce Bag (28) 1g Pre-Rolls",b:"Cushman Cannabis and Company",c:"prerolls",p:30.80,w:35,s:"28 × 1g",t:"25% THC",d:"Over 50 Strains to choose from!",i:"img-preroll-ounce-bag.jpg",u:"28-1g-pre-rolls-all-one-strain"},
+{n:"1g Pre-Roll",b:"Cushman Cannabis and Company",c:"prerolls",p:4,w:5,s:"1g",t:"28% THC",d:"Over 50 Strains to choose from!",i:"img-preroll-1g.jpg",u:"1g-pre-roll"},
 /* ——— INFUSED PRE-ROLLS ——— */
 {n:"Cherry Popper (2pk .7g)",b:"Infused Minis",c:"infused",p:8,s:"2pk × .7g",t:"24.5% THC",d:D_LOOSIES,i:IMG+"pictures/users/006/655/925/443495020_CHERRY_POPPER_2PK.JPG",u:"cherry-popper-2pk-7g-infused-pre-rolls"},
-{n:"CO2 Diamond Infused 2G Pre-Roll",b:"Infused Joints",c:"infused",p:10,s:"2g",t:"",d:"",i:null,u:"co2-diamond-infused-2g-pre-roll"},
+{n:"CO2 Diamond Infused 2G Pre-Roll",b:"Infused Joints",c:"infused",p:10,s:"2g",t:"",d:"",i:"img-infused-co2-2g.jpg",u:"co2-diamond-infused-2g-pre-roll"},
 {n:"Hash Oil Infused Pre-Roll 1.2g",b:"Infused Joints",c:"infused",p:9,s:"1.2g",t:"",d:"",i:IMG+"pictures/users/006/655/925/442676498_Logo.JPG",u:"hash-oil-infused-pre-roll-1-2g"},
 {n:"Orange Zliced 2g Infused Pre-Roll",b:"Infused Joints",c:"infused",p:10,s:"2g",t:"",d:"",i:IMG+"pictures/users/006/655/925/443505411_WOW_2G.JPG",u:"orange-zliced-2g-infused-pre-roll"},
 {n:"Watermelon Juice 2g Infused Pre-Roll",b:"Infused Joints",c:"infused",p:10,s:"2g",t:"",d:"",i:IMG+"pictures/users/006/655/925/443505411_WOW_2G.JPG",u:"watermelon-juice-2g-infused-pre-roll"},
 {n:"1g Diamond Infused Pre-Rolls",b:"",c:"infused",p:10,s:"1g",t:"",d:"",i:null,u:"1g-diamond-infused-pre-rolls"},
 {n:"Banana Splitz (7pk .7g)",b:"Infused Minis",c:"infused",p:30,s:"7pk × .7g",t:"",d:D_WOW7,i:IMG+"pictures/users/006/655/925/443495010_BANANA_SPLITZ_7PK.JPG",u:"banana-splitz-7pk-7g-infused-pre-rolls"},
 {n:"Bubblegum OG (2pk .7g)",b:"Infused Minis",c:"infused",p:8,s:"2pk × .7g",t:"46% THC",d:D_LOOSIES,i:IMG+"pictures/users/006/655/925/443495014_BUBBLEGUM_OG.JPG",u:"bubblegum-og-2pk-7g-infused-pre-rolls"},
-{n:"CO2 Diamond Infused 2 Pack (.7G) Pre-Roll",b:"Infused Minis",c:"infused",p:8,s:"2pk × .7g",t:"",d:"",i:null,u:"co2-diamond-infused-2-pack-7g-pre-roll"},
-{n:"CO2 Diamond Infused 7 Pack (.7G) Pre-Rolls",b:"Infused Minis",c:"infused",p:30,s:"7pk × .7g",t:"",d:"",i:null,u:"co2-diamond-infused-7-pack-7g-pre-rolls"},
+{n:"CO2 Diamond Infused 2 Pack (.7G) Pre-Roll",b:"Infused Minis",c:"infused",p:8,s:"2pk × .7g",t:"",d:"",i:"img-infused-co2-2pack.jpg",u:"co2-diamond-infused-2-pack-7g-pre-roll"},
+{n:"CO2 Diamond Infused 7 Pack (.7G) Pre-Rolls",b:"Infused Minis",c:"infused",p:30,s:"7pk × .7g",t:"",d:"",i:"img-infused-co2-7pack.jpg",u:"co2-diamond-infused-7-pack-7g-pre-rolls"},
 {n:"Lemon Meringue (2pk .7g)",b:"Infused Minis",c:"infused",p:8,s:"2pk × .7g",t:"49% THC",d:D_LOOSIES,i:IMG+"pictures/users/006/655/925/443494942_LEMON_MER_2PK.JPG",u:"lemon-meringue-2pk-7g-infused-pre-rolls"},
 {n:"Orange Zliced (2pk .7g)",b:"Infused Minis",c:"infused",p:8,s:"2pk × .7g",t:"",d:D_LOOSIES,i:IMG+"pictures/users/006/655/925/443500139_ORANGE_ZLICED_2PK.JPG",u:"orange-zliced-2pk-7g-infused-pre-rolls"},
 {n:"Tropical Delight (2pk .7g)",b:"Infused Minis",c:"infused",p:8,s:"2pk × .7g",t:"48.82% THC",d:D_LOOSIES,i:IMG+"pictures/users/006/655/925/443494970_TROPICAL_DELIGHT_2PK.JPG",u:"tropical-delight-2pk-7g-infused-pre-rolls"},
@@ -509,7 +514,8 @@ const CATS = [
 ];
 const CATLABEL = {flower:"Flower",prerolls:"Pre-Rolls",infused:"Infused Pre-Rolls",vapes:"Vape Pens",concentrates:"Concentrates",edibles:"Edibles",wellness:"Wellness"};
 const money = n => "$" + n.toFixed(2);
-const imgSrc = p => p.i ? p.i + "?auto=format&w=600" : null;
+const imgSrc = p => !p.i ? null : (p.i.startsWith("http") ? p.i + "?auto=format&w=600" : p.i);
+const isGen = p => !!p.i && !p.i.startsWith("http");
 const leafSVG = '<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,106,.55)" stroke-width="1"><path d="M12 22c5-3.2 8-7.6 8-13V4.5C15.5 4.8 12 3 12 3S8.5 4.8 4 4.5V9c0 5.4 3 9.8 8 13Z"/><path d="M12 19V8M12 12c-1.8-.2-3-1.2-3.4-3 1.8.2 3 1.2 3.4 3Zm0 3.4c1.8-.2 3-1.2 3.4-3-1.8.2-3 1.2-3.4 3Z" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 let activeCat = "all", query = "";
@@ -518,7 +524,7 @@ const grid = document.getElementById("grid"), filtersEl = document.getElementByI
 
 function imgBlock(p, h){
   const src = imgSrc(p);
-  if(src) return `<div class="relative ${h} overflow-hidden bg-moss"><img src="${src}" alt="${p.n.replace(/"/g,'&quot;')}" loading="lazy" class="pimg w-full h-full object-cover" onerror="this.parentNode.innerHTML=window.__ph"><div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none"></div></div>`;
+  if(src) return `<div class="relative ${h} overflow-hidden bg-moss"><img src="${src}" alt="${p.n.replace(/"/g,'&quot;')}" loading="lazy" class="pimg w-full h-full object-cover" onerror="this.parentNode.innerHTML=window.__ph"><div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none"></div>${isGen(p) ? `<div class="absolute bottom-0 inset-x-0 bg-black/60 px-3 py-1.5 text-center text-[.66rem] tracking-wide text-white/85">Illustrative photo — actual product may vary</div>` : ""}</div>`;
   return `<div class="ph-art relative ${h} flex flex-col items-center justify-center gap-2">${leafSVG}<span class="font-display tracking-[.25em] text-[.6rem] text-gold/70">CUSHMAN</span></div>`;
 }
 window.__ph = `<div class="ph-art absolute inset-0 flex flex-col items-center justify-center gap-2">${leafSVG}<span class="font-display tracking-[.25em] text-[.6rem] text-gold/70">CUSHMAN</span></div>`;
@@ -592,7 +598,7 @@ function openModal(i){
   const p = PRODUCTS[i], src = imgSrc(p);
   const meta = [p.b, p.s, p.t].filter(Boolean).join(" · ");
   modalBody.innerHTML = `
-    ${src ? `<div class="h-64 md:h-72 overflow-hidden rounded-t-3xl bg-moss"><img src="${src}" alt="" class="w-full h-full object-cover"></div>`
+    ${src ? `<div class="h-64 md:h-72 overflow-hidden rounded-t-3xl bg-moss"><img src="${src}" alt="" class="w-full h-full object-cover"></div>${isGen(p) ? `<p class="text-center text-[.7rem] tracking-wide text-white/50 pt-3 -mb-2">Illustrative photo — actual product may vary</p>` : ""}`
           : `<div class="ph-art h-48 flex flex-col items-center justify-center gap-2 rounded-t-3xl">${leafSVG}<span class="font-display tracking-[.25em] text-[.6rem] text-gold/70">CUSHMAN</span></div>`}
     <div class="p-7 md:p-9">
       <p class="text-[.65rem] tracking-[.25em] text-gold uppercase mb-2">${CATLABEL[p.c]}${p.b ? " · " + p.b : ""}</p>
@@ -662,11 +668,7 @@ renderFilters(); renderTiles(); render();
         input = document.getElementById("sageInput");
   let greeted = false;
 
-  /* "Ask your budtender" bubble appears after scrolling ~250px */
-  window.addEventListener("scroll", () => {
-    if(window.scrollY > 250 && !panel.classList.contains("open")) bubble.classList.add("show");
-    else bubble.classList.remove("show");
-  }, {passive:true});
+  /* Launcher (green "Ask your budtender" pill + Sage leaf) is always visible, matching the shop's own design */
 
   function addMsg(text, who){
     const d = document.createElement("div");
@@ -712,14 +714,14 @@ renderFilters(); renderTiles(); render();
   }
 
   function openPanel(){
-    panel.classList.add("open"); bubble.classList.remove("show");
+    panel.classList.add("open"); wrap.classList.add("chat-open");
     if(!greeted){
       greeted = true;
       sageSay("Hey, I'm <b>Sage</b>, your budtender here at Cushman. Looking for something to relax, something uplifting, or just the hours? Ask away.");
     }
     setTimeout(() => input.focus(), 80);
   }
-  function closePanel(){ panel.classList.remove("open"); }
+  function closePanel(){ panel.classList.remove("open"); wrap.classList.remove("chat-open"); }
   btn.addEventListener("click", () => panel.classList.contains("open") ? closePanel() : openPanel());
   bubble.addEventListener("click", openPanel);
   document.getElementById("sageClose").addEventListener("click", closePanel);
