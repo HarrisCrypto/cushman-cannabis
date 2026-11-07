@@ -118,7 +118,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z
     <a href="#" class="card block"><img src="cat-flower.jpg" alt="Flower" class="w-full h-36 sm:h-44 object-cover"/><div class="p-4 sm:p-5 flex items-end justify-between"><div><h3 class="disp font-bold text-lg">Flower</h3><p class="text-sm" style="color:#5a6b52">13 strains</p></div><span class="font-bold" style="color:var(--gold)">Shop →</span></div></a>
     <a href="#" class="card block"><img src="img-preroll-1g.jpg" alt="Pre-rolls" class="w-full h-36 sm:h-44 object-cover"/><div class="p-4 sm:p-5 flex items-end justify-between"><div><h3 class="disp font-bold text-lg">Pre-Rolls</h3><p class="text-sm" style="color:#5a6b52">6 ready to go</p></div><span class="font-bold" style="color:var(--gold)">Shop →</span></div></a>
     <a href="#" class="card block"><img src="cat-vapes.jpg" alt="Vape pens" class="w-full h-36 sm:h-44 object-cover"/><div class="p-4 sm:p-5 flex items-end justify-between"><div><h3 class="disp font-bold text-lg">Vape Pens</h3><p class="text-sm" style="color:#5a6b52">54 carts &amp; disposables</p></div><span class="font-bold" style="color:var(--gold)">Shop →</span></div></a>
-    <a href="#" class="card block"><img src="https://images.weedmaps.com/products/000/002/948/avatar/webp/1693911971-wana-quick-fast-acting-gummies-tinctures-hybrid-2-1-watermelon-100mg.jpg" alt="Edibles" class="w-full h-36 sm:h-44 object-cover"/><div class="p-4 sm:p-5 flex items-end justify-between"><div><h3 class="disp font-bold text-lg">Edibles</h3><p class="text-sm" style="color:#5a6b52">14 gummies &amp; more</p></div><span class="font-bold" style="color:var(--gold)">Shop →</span></div></a>
+    <a href="#" class="card block"><img src="https://weedmaps.com/images/products/000/596/864/avatar/1714682324-wana-universal_hero-rec-watermelon_hybrid.png?auto=format&w=900" alt="Edibles" class="w-full h-36 sm:h-44 object-cover"/><div class="p-4 sm:p-5 flex items-end justify-between"><div><h3 class="disp font-bold text-lg">Edibles</h3><p class="text-sm" style="color:#5a6b52">14 gummies &amp; more</p></div><span class="font-bold" style="color:var(--gold)">Shop →</span></div></a>
     <a href="#" class="card block"><img src="cat-concentrates.jpg" alt="Concentrates" class="w-full h-36 sm:h-44 object-cover"/><div class="p-4 sm:p-5 flex items-end justify-between"><div><h3 class="disp font-bold text-lg">Concentrates</h3><p class="text-sm" style="color:#5a6b52">9 extracts</p></div><span class="font-bold" style="color:var(--gold)">Shop →</span></div></a>
     <a href="#" class="card block"><img src="cat-wellness.jpg" alt="Wellness" class="w-full h-36 sm:h-44 object-cover"/><div class="p-4 sm:p-5 flex items-end justify-between"><div><h3 class="disp font-bold text-lg">Wellness</h3><p class="text-sm" style="color:#5a6b52">11 tinctures &amp; topicals</p></div><span class="font-bold" style="color:var(--gold)">Shop →</span></div></a>
   </div>
@@ -159,7 +159,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z
       </div>
     </div>
     <div class="card">
-      <img src="https://images.weedmaps.com/products/000/002/948/avatar/webp/1693911971-wana-quick-fast-acting-gummies-tinctures-hybrid-2-1-watermelon-100mg.jpg" alt="Wana watermelon gummies" class="w-full h-40 object-cover"/>
+      <img src="https://weedmaps.com/images/products/000/596/864/avatar/1714682324-wana-universal_hero-rec-watermelon_hybrid.png?auto=format&w=900" alt="Wana watermelon gummies" class="w-full h-40 object-cover"/>
       <div class="p-4">
         <p class="chip" style="color:var(--gold)">Wana · Edibles</p>
         <h3 class="font-bold mt-1 leading-snug">Quick Gummies — Watermelon</h3>
@@ -173,10 +173,11 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z
 <!-- story -->
 <section id="story" class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-16">
   <div class="grid lg:grid-cols-2 gap-5">
-    <div class="rounded-3xl p-8 sm:p-10 relative overflow-hidden" style="background:var(--forest);color:#f3ecd4">
-      <img src="logo.png" alt="" class="w-24 h-24 rounded-full mb-6" style="border:3px solid rgba(243,236,212,.35)"/>
-      <p class="disp text-2xl sm:text-[1.7rem] leading-snug font-semibold">"Good medicine, honest prices, and a shop that feels like it belongs to this town — because it does."</p>
-      <svg viewBox="0 0 600 70" preserveAspectRatio="none" class="w-full h-12 mt-8 opacity-70" aria-hidden="true"><path d="M0,45 C120,20 260,60 400,38 C480,26 550,44 600,34 L600,70 L0,70 Z" fill="#7fae6d"/><path d="M0,58 C140,38 300,68 450,52 C520,45 570,58 600,52 L600,70 L0,70 Z" fill="#20301e" opacity=".55"/></svg>
+    <div class="rounded-3xl p-8 sm:p-10 relative overflow-hidden flex flex-col" style="background:var(--forest);color:#f3ecd4">
+      <img src="logo.png" alt="" aria-hidden="true" class="absolute -right-12 -bottom-12 w-64 h-64 rounded-full opacity-[.13] pointer-events-none"/>
+      <img src="logo.png" alt="" class="relative w-24 h-24 rounded-full mb-6" style="border:3px solid rgba(243,236,212,.35)"/>
+      <p class="relative disp text-2xl sm:text-[1.7rem] leading-snug font-semibold">"Good medicine, honest prices, and a shop that feels like it belongs to this town — because it does."</p>
+      <svg viewBox="0 0 600 70" preserveAspectRatio="none" class="relative w-full h-14 mt-auto pt-6 opacity-70" aria-hidden="true"><path d="M0,45 C120,20 260,60 400,38 C480,26 550,44 600,34 L600,70 L0,70 Z" fill="#7fae6d"/><path d="M0,58 C140,38 300,68 450,52 C520,45 570,58 600,52 L600,70 L0,70 Z" fill="#20301e" opacity=".55"/></svg>
     </div>
     <div class="card !rounded-3xl p-8 sm:p-10">
       <p class="eyebrow" style="color:var(--gold)">Our roots</p>
@@ -203,7 +204,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z
       <p class="eyebrow" style="color:var(--gold)">Plan your visit</p>
       <h2 class="disp text-3xl font-bold mt-2">Come see us</h2>
       <p class="mt-4 font-bold">217 West Moses Street<br/>Cushing, OK 74023</p>
-      <p class="mt-2"><a class="font-bold underline decoration-dotted" href="tel:+19183060073">(918) 306-0073</a> · <a class="font-bold underline decoration-dotted" href="mailto:cush@cushmanllc.com">cush@cushmanllc.com</a></p>
+      <p class="mt-2"><a class="font-bold underline underline-offset-4" href="tel:+19183060073">(918) 306-0073</a> · <a class="font-bold underline underline-offset-4" href="mailto:cush@cushmanllc.com">cush@cushmanllc.com</a></p>
       <p class="mt-4 text-sm" style="color:#5a6b52">OMMA License DAAA-NYVV-OUDB · Medical patients 18+ with a valid OMMA card.</p>
       <div class="mt-6 flex flex-wrap gap-3">
         <a class="btn btn-p" href="https://www.google.com/maps/dir/?api=1&destination=217+West+Moses+Street+Cushing+OK+74023" target="_blank" rel="noopener">Get Directions</a>
