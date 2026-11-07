@@ -71,8 +71,8 @@ tailwind.config = { theme: { extend: {
   #sageBubble{position:relative;background:linear-gradient(135deg,#2f9e54,#176f3a);color:#fff;font-weight:600;font-size:.93rem;padding:.7rem 1.4rem;border-radius:999px;cursor:pointer;box-shadow:0 12px 28px -8px rgba(0,0,0,.65);transition:transform .3s;text-align:center}
   #sageBubble::after{content:"";position:absolute;left:50%;bottom:-5px;width:12px;height:12px;background:#1e7f42;transform:translateX(-50%) rotate(45deg);border-radius:2px}
   #sageBubble:hover{transform:translateY(-2px)}
-  #sageBtn{width:96px;height:96px;border-radius:22px;overflow:hidden;border:none;box-shadow:0 16px 36px -10px rgba(0,0,0,.75);background:#000;padding:0;cursor:pointer;animation:sageBob 3.4s ease-in-out infinite}
-  #sageBtn img{width:100%;height:100%;object-fit:cover;display:block}
+  #sageBtn{width:106px;height:auto;border:none;background:transparent;padding:0;cursor:pointer;animation:sageBob 3.4s ease-in-out infinite;filter:drop-shadow(0 16px 22px rgba(0,0,0,.55))}
+  #sageBtn img{width:100%;height:auto;display:block}
   #sageWrap.chat-open #sageBubble,#sageWrap.chat-open #sageBtn{display:none}
   @keyframes sageBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
   #sagePanel{width:min(92vw,360px);max-height:min(70vh,560px);display:none;flex-direction:column}
@@ -377,7 +377,7 @@ tailwind.config = { theme: { extend: {
   <div id="sageBubble" role="button" aria-label="Ask your budtender">Ask your budtender</div>
   <div id="sagePanel" class="glass-strong rounded-3xl overflow-hidden shadow-2xl">
     <div class="flex items-center gap-3 px-5 py-4 border-b hairline">
-      <img src="sage-leaf.jpg" alt="Sage the budtender" class="w-11 h-11 rounded-full object-cover border border-gold/50">
+      <img src="sage-leaf.png" alt="Sage the budtender" class="w-11 h-11 rounded-full object-cover border border-gold/50">
       <div class="flex-1">
         <p class="font-display tracking-wide">Budtender Sage</p>
         <p class="text-[.68rem] text-sage flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-sage"></span>Here to help you find your strain</p>
@@ -399,7 +399,7 @@ tailwind.config = { theme: { extend: {
     </form>
   </div>
   <button id="sageBtn" aria-label="Chat with Budtender Sage">
-    <img src="sage-leaf.jpg" alt="Budtender Sage">
+    <img src="sage-leaf.png" alt="Budtender Sage">
   </button>
 </div>
 
@@ -729,10 +729,11 @@ renderFilters(); renderTiles(); render();
   function prodRow(o){
     return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:7px 10px"><span style="min-width:0"><span style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${o.p.n}</span><span style="color:rgba(255,255,255,.5);font-size:.72rem">${o.p.s ? o.p.s + " · " : ""}${moneyS(o.p.p)}${o.p.w ? ` <s style="color:rgba(255,255,255,.35)">${moneyS(o.p.w)}</s>` : ""}</span></span><button data-open="${o.i}" style="flex-shrink:0;color:#e8cf9a;font-size:.68rem;letter-spacing:.08em;border:1px solid rgba(201,168,106,.45);border-radius:999px;padding:5px 11px;background:transparent;cursor:pointer">VIEW</button></div>`;
   }
-  function listAnswer(list, lead){
+  function listAnswer(list, lead, lim){
+    lim = lim || 4;
     if(!list.length) return null;
-    let out = lead + list.slice(0,4).map(prodRow).join("");
-    if(list.length > 4) out += `<div style="color:rgba(255,255,255,.45);font-size:.72rem;margin-top:8px">…plus ${list.length - 4} more in the menu below — or ask me to narrow it down.</div>`;
+    let out = lead + list.slice(0, lim).map(prodRow).join("");
+    if(list.length > lim) out += `<div style="color:rgba(255,255,255,.45);font-size:.72rem;margin-top:8px">…plus ${list.length - lim} more — say "show all" and I'll list the rest.</div>`;
     return out;
   }
   function searchProducts(q){
@@ -753,6 +754,7 @@ renderFilters(); renderTiles(); render();
 
   function answer(qRaw){
     const q = qRaw.toLowerCase().trim();
+    const LIM = /\b(all|more|rest)\b/.test(q) ? 12 : 4;
     if(/(hour|open|close|when)/.test(q))
       return "We're open <b>Mon 11 AM – 8 PM</b>, <b>Tue–Fri 10 AM – 8 PM</b>, <b>Sat 11 AM – 8 PM</b>, and closed Sundays. Come see us!";
     if(/(where|address|located|location|direction|find you|map)/.test(q))
@@ -763,7 +765,7 @@ renderFilters(); renderTiles(); render();
       return "New patients get <b>10% off their first order</b> — just mention it at checkout. And every price on our menu already has tax included, so there are no surprises.";
     if(/(on sale|sale|special|deal|discount|offer|coupon|promo)/.test(q)){
       const sale = PRODUCTS.map((p,i) => ({p, i})).filter(o => o.p.w);
-      return listAnswer(sale, `Here's what's <b>on sale</b> right now — ${sale.length} items, tax included:`) || "Nothing's marked down at the moment — but new patients always get 10% off their first order.";
+      return listAnswer(sale, `Here's what's <b>on sale</b> right now — ${sale.length} items, tax included:`, LIM) || "Nothing's marked down at the moment — but new patients always get 10% off their first order.";
     }
     if(/(card|medical|omma|license|id)/.test(q))
       return "We're a medical dispensary, so you'll need a valid <b>OMMA patient license</b> and photo ID. Don't have a card yet? omma.ok.gov can walk you through applying.";
@@ -800,7 +802,7 @@ renderFilters(); renderTiles(); render();
     if(/(thank|thanks|bye)/.test(q))
       return "Anytime! That's what I'm here for. Hope to see you at the shop — 217 West Moses, Cushing.";
     const found = searchProducts(q);
-    if(found.length) return listAnswer(found, `Here's what I found for “${qRaw.trim()}”:`);
+    if(found.length) return listAnswer(found, `Here's what I found for “${qRaw.trim()}”:`, LIM);
     return "Good question — I want to make sure you get the exact right answer. You can call the shop at <b>(918) 306-0073</b>, or ask me about hours, our location, the first-time discount, or what's on the menu.";
   }
   function openPanel(){
