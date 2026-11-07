@@ -115,9 +115,9 @@ tailwind.config = { theme: { extend: {
 
 <!-- ══════════ HERO ══════════ -->
 <section id="top" class="relative min-h-[100svh] flex items-end md:items-center overflow-hidden">
-  <video class="hero-video" autoplay muted loop playsinline preload="auto" src="hero-loop.mp4"></video>
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" src="hero-calm-loop.mp4"></video>
   <div class="hero-shade absolute inset-0"></div>
-  <div class="relative z-10 max-w-7xl mx-auto px-5 md:px-8 w-full pt-36 pb-20 md:py-40">
+  <div class="relative z-10 max-w-7xl mx-auto px-5 md:px-8 w-full pt-36 pb-48 md:py-40">
     <div class="max-w-3xl">
       <div class="flex items-center gap-3 mb-6">
         <span class="h-px w-12 bg-gold/70"></span>
@@ -145,6 +145,17 @@ tailwind.config = { theme: { extend: {
 <!-- ══════════ CATEGORY TILES ══════════ -->
 <section class="relative max-w-7xl mx-auto px-5 md:px-8 -mt-4 md:-mt-10 z-20">
   <div id="tiles" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
+</section>
+
+<!-- ══════════ ORDER AHEAD — STANDALONE CTA ══════════ -->
+<section class="relative max-w-7xl mx-auto px-5 md:px-8 mt-5 z-20">
+  <div class="rounded-3xl px-7 py-8 md:px-10 md:py-9 flex flex-col md:flex-row md:items-center gap-6 md:gap-10 shadow-2xl" style="background:linear-gradient(130deg,#e3c98c,#c9a86a 55%,#a8894f);color:#141a10">
+    <div class="flex-1">
+      <p class="font-display text-2xl md:text-[1.7rem] font-semibold tracking-wide leading-tight">Order Ahead, Skip the Wait</p>
+      <p class="text-[#141a10]/75 mt-2 leading-relaxed font-light max-w-xl">Browse the menu here, order on Weedmaps, and we'll have it ready — just call when you arrive and we'll bring it out curbside.</p>
+    </div>
+    <a href="https://weedmaps.com/dispensaries/cushman-cannabis-company" target="_blank" rel="noopener" class="shrink-0 inline-flex items-center justify-center gap-2 rounded-full px-9 py-4 text-sm font-semibold tracking-wide shadow-xl transition hover:scale-[1.03]" style="background:#10150c;color:#e8cf9a">Order on Weedmaps <span aria-hidden="true">↗</span></a>
+  </div>
 </section>
 
 <!-- ══════════ MENU ══════════ -->
@@ -573,18 +584,21 @@ function renderFilters(){
 }
 function renderTiles(){
   const descs = {flower:"Oklahoma-grown, hand-trimmed buds",prerolls:"Singles & the famous ounce bag",infused:"Diamond & hash-oil infused heat",vapes:"Live resin, rosin & diamond pods",concentrates:"Diamonds, shatter & cured resin",edibles:"Gummies, lozenges & nano pouches",wellness:"Fast-acting drinkable relief"};
+  const imgs = {flower:"cat-flower.jpg",prerolls:"img-preroll-1g.jpg",infused:"img-infused-co2-2g.jpg",vapes:"cat-vapes.jpg",concentrates:"cat-concentrates.jpg",edibles:"https://weedmaps.com/images/products/000/596/864/avatar/1714682324-wana-universal_hero-rec-watermelon_hybrid.png?auto=format&w=900",wellness:"cat-wellness.jpg"};
   document.getElementById("tiles").innerHTML = CATS.slice(1).map(c => {
     const n = PRODUCTS.filter(p=>p.c===c.id).length;
-    return `<button class="tile glass rounded-3xl p-6 text-left" data-cat="${c.id}">
-      <div class="flex items-start justify-between"><span class="font-display text-lg tracking-wide">${c.label}</span><span class="tile-arrow text-gold">→</span></div>
-      <p class="text-white/50 text-[.82rem] font-light mt-2 leading-relaxed">${descs[c.id]}</p>
-      <p class="text-[.65rem] tracking-[.22em] text-gold/80 mt-4">${n} PRODUCTS</p>
+    return `<button class="tile group relative overflow-hidden rounded-3xl border border-white/10 text-left h-48 md:h-56 w-full" data-cat="${c.id}">
+      <img src="${imgs[c.id]}" alt="${c.label}" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105">
+      ${c.id==="edibles" ? `<span class="absolute inset-0 bg-black/30"></span>` : ""}
+      <span class="absolute inset-0" style="background:linear-gradient(to top,rgba(5,8,5,.93) 0%,rgba(5,8,5,.38) 48%,rgba(5,8,5,.06) 100%)"></span>
+      <span class="tile-arrow absolute top-4 right-5 text-gold text-lg">→</span>
+      <span class="absolute inset-x-0 bottom-0 p-5 block">
+        <span class="font-display text-lg md:text-xl tracking-wide block">${c.label}</span>
+        <span class="text-white/60 text-[.8rem] font-light block mt-1 leading-snug">${descs[c.id]}</span>
+        <span class="text-[.62rem] tracking-[.22em] text-gold/90 block mt-2.5">${n} PRODUCTS</span>
+      </span>
     </button>`;
-  }).join("") + `<a href="https://weedmaps.com/dispensaries/cushman-cannabis-company" target="_blank" rel="noopener" class="tile rounded-3xl p-6 text-left flex flex-col justify-between" style="background:linear-gradient(140deg,#dcbc7d,#c9a86a 55%,#a8894f);color:#141a10">
-      <span class="font-display text-lg tracking-wide font-semibold">Order Ahead</span>
-      <p class="text-[#141a10]/70 text-[.82rem] mt-2 leading-relaxed">Skip the wait — order on Weedmaps and pick up curbside.</p>
-      <p class="text-[.65rem] tracking-[.22em] mt-4 font-semibold">WEEDMAPS.COM ↗</p>
-    </a>`;
+  }).join("");
   document.querySelectorAll("#tiles .tile[data-cat]").forEach(t => t.addEventListener("click", () => {
     activeCat = t.dataset.cat; renderFilters(); render();
     document.getElementById("menu").scrollIntoView({behavior:"smooth"});
