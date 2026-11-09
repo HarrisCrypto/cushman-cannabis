@@ -53,6 +53,7 @@ tailwind.config = { theme: { extend: {
   .pill{transition:.25s;border:1px solid rgba(233,230,221,.16)}
   .pill:hover{border-color:rgba(201,168,106,.6);color:#e8cf9a}
   .pill.active{background:linear-gradient(115deg,#dcbc7d,#c9a86a 55%,#a8894f);color:#141a10;border-color:transparent;font-weight:600}
+  #sortBy option{background:#141a10;color:#f5f1e6}
   .card{background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.07);transition:.45s cubic-bezier(.22,1,.36,1);overflow:hidden}
   .card:hover{transform:translateY(-5px);border-color:rgba(201,168,106,.45);box-shadow:0 24px 48px -20px rgba(0,0,0,.75)}
   .card .pimg{transition:transform .8s cubic-bezier(.22,1,.36,1)}
@@ -203,6 +204,17 @@ tailwind.config = { theme: { extend: {
     </div>
   </div>
   <div id="filters" class="reveal flex flex-wrap gap-2.5 mb-4"></div>
+  <div class="reveal flex flex-wrap items-center gap-2.5 mb-4">
+    <label for="sortBy" class="text-[.65rem] tracking-[.25em] text-white/45">SORT BY</label>
+    <select id="sortBy" class="glass rounded-full py-2.5 pl-4 pr-4 text-[.8rem] tracking-wide focus:outline-none focus:border-gold/60 bg-transparent cursor-pointer" style="color-scheme:dark">
+      <option value="featured">Featured</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="name-asc">Name: A to Z</option>
+      <option value="name-desc">Name: Z to A</option>
+    </select>
+    <button id="saleToggle" class="pill rounded-full px-5 py-2.5 text-[.8rem] tracking-wide" type="button">On Sale <span id="saleCount" class="opacity-60 text-xs"></span></button>
+  </div>
   <p id="resultCount" class="text-[.72rem] tracking-[.2em] text-white/40 mb-8"></p>
   <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
   <div id="sections" class="hidden"></div>
@@ -552,10 +564,10 @@ const imgSrc = p => !p.i ? null : (p.i.startsWith("http") ? p.i + "?auto=format&
 const isGen = p => !!p.i && !p.i.startsWith("http");
 const CATPH = {flower:"ph-flower.jpg",prerolls:"ph-prerolls.jpg",infused:"ph-infused.jpg",vapes:"ph-vapes.jpg",concentrates:"ph-concentrates.jpg",edibles:"ph-edibles.jpg",wellness:"ph-wellness.jpg"};
 const phSrc = p => p.i ? null : CATPH[p.c];
-const scrollToFirst = () => { const el = (activeCat === "all" && !query) ? sectionsEl.querySelector(".card:not(.hidden)") : grid.querySelector(".card"); if (el) setTimeout(() => el.scrollIntoView({behavior:"smooth", block:"start"}), 60); };
+const scrollToFirst = () => { const el = (activeCat === "all" && !query && sortBy === "featured" && !saleOnly) ? sectionsEl.querySelector(".card:not(.hidden)") : grid.querySelector(".card"); if (el) setTimeout(() => el.scrollIntoView({behavior:"smooth", block:"start"}), 60); };
 const leafSVG = '<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,106,.55)" stroke-width="1"><path d="M12 22c5-3.2 8-7.6 8-13V4.5C15.5 4.8 12 3 12 3S8.5 4.8 4 4.5V9c0 5.4 3 9.8 8 13Z"/><path d="M12 19V8M12 12c-1.8-.2-3-1.2-3.4-3 1.8.2 3 1.2 3.4 3Zm0 3.4c1.8-.2 3-1.2 3.4-3-1.8.2-3 1.2-3.4 3Z" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-let activeCat = "all", query = "";
+let activeCat = "all", query = "", sortBy = "featured", saleOnly = false;
 const grid = document.getElementById("grid"), sectionsEl = document.getElementById("sections"), filtersEl = document.getElementById("filters"),
       countEl = document.getElementById("resultCount"), emptyEl = document.getElementById("emptyState");
 
@@ -600,7 +612,7 @@ function render(){
   const q = query.trim().toLowerCase();
   const all = PRODUCTS.map((p,i)=>({...p,_i:i}));
   const matches = p => !q || (p.n+" "+p.b+" "+CATLABEL[p.c]).toLowerCase().includes(q);
-  if(activeCat==="all" && !q){
+  if(activeCat==="all" && !q && sortBy==="featured" && !saleOnly){
     grid.classList.add("hidden"); sectionsEl.classList.remove("hidden");
     sectionsEl.innerHTML = CATS.slice(1).map(c => {
       let items = all.filter(p => p.c===c.id);
@@ -630,8 +642,13 @@ function render(){
   }
   sectionsEl.classList.add("hidden"); sectionsEl.innerHTML = "";
   grid.classList.remove("hidden");
-  const list = all.filter(p => (q || activeCat==="all" || p.c===activeCat) && matches(p));
-  list.sort((a, b) => (b.i ? 1 : 0) - (a.i ? 1 : 0));
+  const list = all.filter(p => (q || activeCat==="all" || p.c===activeCat) && matches(p) && (!saleOnly || p.w));
+  const byPhoto = (a, b) => (b.i ? 1 : 0) - (a.i ? 1 : 0);
+  if(sortBy==="price-asc") list.sort((a, b) => a.p - b.p || byPhoto(a, b));
+  else if(sortBy==="price-desc") list.sort((a, b) => b.p - a.p || byPhoto(a, b));
+  else if(sortBy==="name-asc") list.sort((a, b) => a.n.localeCompare(b.n));
+  else if(sortBy==="name-desc") list.sort((a, b) => b.n.localeCompare(a.n));
+  else list.sort(byPhoto);
   grid.innerHTML = list.map(p => cardHTML(p, p._i)).join("");
   countEl.textContent = "SHOWING " + list.length + " OF " + PRODUCTS.length + " PRODUCTS · TAX INCLUDED";
   emptyEl.classList.toggle("hidden", list.length>0);
@@ -667,6 +684,9 @@ function renderTiles(){
   }));
 }
 document.getElementById("search").addEventListener("input", e => { query = e.target.value; render(); });
+document.getElementById("sortBy").addEventListener("change", e => { sortBy = e.target.value; render(); });
+document.getElementById("saleToggle").addEventListener("click", e => { saleOnly = !saleOnly; e.currentTarget.classList.toggle("active", saleOnly); render(); });
+document.getElementById("saleCount").textContent = PRODUCTS.filter(p => p.w).length;
 
 /* ——— Modal ——— */
 const modal = document.getElementById("modal"), modalBody = document.getElementById("modalBody");
@@ -928,7 +948,7 @@ renderFilters(); renderTiles(); render();
   }
   document.addEventListener("click", e => { if (e.target.closest && e.target.closest(".card,[data-seemore]")) setTimeout(() => considerNudge(0), 4000); });
   addEventListener("appinstalled", () => { hideNudge(); collapseBar(); });
-  const APP_VERSION = "20261109-1058";
+  const APP_VERSION = "20261109-1122";
   async function checkFresh(){
     try {
       if (navigator.serviceWorker) { const reg = await navigator.serviceWorker.getRegistration(); if (reg) reg.update().catch(() => {}); }
